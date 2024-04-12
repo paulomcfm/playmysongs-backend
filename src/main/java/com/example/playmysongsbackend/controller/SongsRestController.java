@@ -41,6 +41,23 @@ public class SongsRestController {
     public ResponseEntity<Object> testarConexao(){
         return ResponseEntity.ok("Bem vindo a API de movies");
     }
+    @GetMapping(value = "/get-musicas/")
+    public ResponseEntity<Object> getTodasMusicas() throws IOException {
+        List<Song> resultados = new ArrayList<>();
+        String caminho = getStaticPath();
+        File pasta = new File(caminho);
+        for (File file : pasta.listFiles()) {
+            if (file.isFile()) {
+                String fileName = file.getName();
+                Pattern pattern = Pattern.compile("([^_]+)_([^_]+)_([^_]+)\\.mp3");
+                Matcher matcher = pattern.matcher(fileName);
+                if (matcher.find()) {
+                    resultados.add(new Song(fileName,caminho));
+                }
+            }
+        }
+        return ResponseEntity.ok(resultados);
+    }
     @GetMapping(value = "/get-musicas/{nome}")
     public ResponseEntity<Object> getMusicas(@PathVariable("nome") String nome) throws IOException {
         List<Song> resultados = new ArrayList<>();
